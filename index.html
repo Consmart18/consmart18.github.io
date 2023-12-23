@@ -2,28 +2,33 @@
 <html>
 <head>
     <title>Jamiu Idowu</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
-            font-family: Garamond, serif;
+            font-family: Garamond;
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            text-align: left;
         }
         .container {
             width: 60%;
-            max-width: 800px;
         }
         h3, p, li, a {
             font-size: 16px;
         }
+        h3, .no-space-after {
+            margin-bottom: 0;
+        }
+        .space-after {
+            margin-bottom: 1em;
+        }
         ul {
             list-style-type: disc;
             padding-left: 20px;
+            margin-top: 0;
+            margin-bottom: 0;
         }
         a {
             color: #007bff;
@@ -35,7 +40,7 @@
 
         @media (max-width: 600px) {
             .container {
-                width: 95%;
+                width: 90%;
             }
             h3, p, li, a {
                 font-size: 18px;
