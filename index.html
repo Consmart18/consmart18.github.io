@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Jamiu Idowu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         body {
             font-family: Garamond;
@@ -14,9 +15,10 @@
         }
         .container {
             width: 60%;
+            max-width: 600px; /* Adjusted for maximum width */
         }
         h3, p, li, a {
-            font-size: 16px;
+            font-size: 1em; /* Use em for relative font size */
         }
         h3, .no-space-after {
             margin-bottom: 0;
@@ -26,7 +28,7 @@
         }
         ul {
             list-style-type: disc;
-            padding-left: 20px;
+            padding-left: 1.25em; /* Adjusted to em */
             margin-top: 0;
             margin-bottom: 0;
         }
@@ -40,10 +42,10 @@
 
         @media (max-width: 600px) {
             .container {
-                width: 90%;
+                width: 90%; /* Increased width for small screens */
             }
             h3, p, li, a {
-                font-size: 18px;
+                font-size: 1.125em; /* Slightly larger font size for small screens */
             }
         }
     </style>
