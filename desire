@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Desire.</title>
+    <!-- Importing a slick, modern font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .slide {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        .slide.active {
+            display: block;
+            opacity: 1;
+        }
+
+        h1 {
+            font-weight: 600;
+            font-size: 2em;
+            margin-bottom: 0.5em;
+            letter-spacing: -0.5px;
+        }
+
+        p {
+            font-weight: 300;
+            font-size: 1.1em;
+            color: #d1d5db;
+            margin-bottom: 2em;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 18px 24px;
+            font-size: 1.1em;
+            font-family: inherit;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        button:hover, button:active {
+            background: rgba(255, 255, 255, 0.9);
+            color: #0f0c29;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .progress {
+            margin-top: 30px;
+            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="app">
+        <!-- Slides will be injected here by JavaScript -->
+    </div>
+
+    <script>
+        const questions = [
+            ["Dinner date", "Movie night"],
+            ["Dancing", "Singing"],
+            ["Reading", "Writing"],
+            ["Men are stressful", "Men are heavenly"],
+            ["Bisexual", "Straight"],
+            ["Hot shower", "Steamy massage"],
+            ["Early morning walk", "Late-night drive"],
+            ["Flowers every month", "Surprise holidays"],
+            ["Cuddles", "Kisses"],
+            ["Celibate for 6 months", "No alcohol for 6 months"],
+            ["The calm one", "The chaotic one"],
+            ["Rich and unhappy", "Comfortable & deeply in love"],
+            ["Five children", "Five businesses"]
+        ];
+
+        let currentSlide = -1; // -1 represents the intro slide
+        const app = document.getElementById('app');
+
+        function renderSlide() {
+            let html = '';
+
+            if (currentSlide === -1) {
+                // Intro Slide
+                html = `
+                    <div class="slide active">
+                        <h1>Hi, Desire.</h1>
+                        <p>You asked for a pitch deck. Let's start with some due diligence.</p>
+                        <div class="options">
+                            <button onclick="nextSlide()">Begin</button>
+                        </div>
+                    </div>
+                `;
+            } else if (currentSlide < questions.length) {
+                // Question Slides
+                html = `
+                    <div class="slide active">
+                        <p style="font-size: 0.9em; text-transform: uppercase; letter-spacing: 2px; color: #9ca3af;">This or That</p>
+                        <div class="options">
+                            <button onclick="nextSlide()">${questions[currentSlide][0]}</button>
+                            <button onclick="nextSlide()">${questions[currentSlide][1]}</button>
+                        </div>
+                        <div class="progress">${currentSlide + 1} / ${questions.length}</div>
+                    </div>
+                `;
+            } else {
+                // Outro Slide
+                html = `
+                    <div class="slide active">
+                        <h1>Data Logged.</h1>
+                        <p>Due diligence complete. I'll see you on the call.</p>
+                    </div>
+                `;
+            }
+
+            app.innerHTML = html;
+        }
+
+        function nextSlide() {
+            // Quick fade out effect before rendering next slide
+            const currentEl = document.querySelector('.slide');
+            currentEl.style.opacity = 0;
+            
+            setTimeout(() => {
+                currentSlide++;
+                renderSlide();
+            }, 300); // Wait 300ms for the fade out to complete
+        }
+
+        // Initialize the app
+        renderSlide();
+    </script>
+</body>
+</html>
