@@ -43,7 +43,7 @@
   h1{
     font-family: 'Fraunces', serif;
     font-weight: 500;
-    font-size: clamp(2.1rem, 5vw, 2.6rem);
+    font-size: clamp(1.1rem, 2.6vw, 1.35rem);
     letter-spacing: -0.01em;
     margin: 0;
     line-height: 1.05;
@@ -63,7 +63,7 @@
   }
 
   .contact a{
-    color: var(--muted);
+    color: var(--accent);
   }
 
   ul{
@@ -74,8 +74,8 @@
 
   li{
     position: relative;
-    padding-left: 22px;
-    margin-bottom: 15px;
+    padding-left: 20px;
+    margin-bottom: 7px;
     font-size: 1rem;
     line-height: 1.55;
     color: var(--ink);
@@ -84,7 +84,7 @@
   li:last-child{ margin-bottom: 0; }
 
   li::before{
-    content: "–";
+    content: "•";
     position: absolute;
     left: 0;
     color: var(--accent);
@@ -92,15 +92,15 @@
   }
 
   a{
-    color: var(--ink);
-    text-decoration: none;
-    border-bottom: 1px solid var(--hairline);
-    transition: border-color 0.15s ease, color 0.15s ease;
+    color: var(--accent);
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 2px;
+    transition: opacity 0.15s ease;
   }
 
   a:hover{
-    color: var(--accent);
-    border-color: var(--accent);
+    opacity: 0.7;
   }
 
   @media (max-width: 480px){
@@ -118,11 +118,11 @@
     <ul>
       <li>Working on AI Risk Management and Applied AI</li>
       <li>UK Global Talent, endorsed by the Royal Academy of Engineering</li>
-      <li>Co-founded <a href="http://sahel.ai" target="_blank" rel="noopener">Sahel AI</a></li>
-      <li>Country Program Manager, HP IDEA (2020–2022)</li>
+      <li>Co-founded <a href="https://sahelai.com/" target="_blank" rel="noopener">Sahel AI</a></li>
       <li>Research on AI Safety and Multi-Agent Systems — <a href="https://scholar.google.com/citations?user=Gu5LYW8AAAAJ&hl=en" target="_blank" rel="noopener">some of it here</a></li>
+      <li>Country Program Manager, <a href="https://www.hp.com/emea_middle_east-en/solutions/education/idea-fellows.html" target="_blank" rel="noopener">HP IDEA</a> (2020–2022)</li>
       <li><a href="https://www.chevening.org/" target="_blank" rel="noopener">Chevening Scholar</a></li>
-      <li>MSc AI (Distinction), <a href="http://ucl.ac.uk" target="_blank" rel="noopener">UCL</a></li>
+      <li>MSc AI (Distinction), <a href="https://www.ucl.ac.uk/engineering/computer-science/study/postgraduate-taught/postgraduate-student-experiences/jamiu-idowu" target="_blank" rel="noopener">UCL</a></li>
     </ul>
   </div>
 </body>
