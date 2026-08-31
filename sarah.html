@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For Sarah</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#F6EEE9">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,450;0,9..144,560;0,9..144,650;1,9..144,500&family=Instrument+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F6EEE9;
+  --paper-2:#EFE1D8;
+  --ink:#201A18;
+  --ink-soft:rgba(32,26,24,.66);
+  --accent:#A9805A;
+  --line:rgba(32,26,24,.16);
+}
+*{box-sizing:border-box;}
+html,body{
+  margin:0;padding:0;
+  background:radial-gradient(ellipse at top, var(--paper-2), var(--paper) 62%);
+  color:var(--ink);
+  font-family:'Instrument Sans',sans-serif;
+  height:100vh;height:100dvh;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+button,input{font:inherit;color:inherit;}
+button{background:none;border:none;cursor:pointer;padding:0;}
+h1,p{margin:0;}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+.chrome-top{
+  position:fixed;top:0;left:0;right:0;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 24px;
+  z-index:20;
+  pointer-events:none;
+}
+.mark{
+  width:32px;height:32px;
+  border:1px solid var(--ink);
+  border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;
+  font-size:12px;font-weight:700;
+}
+.stamp{
+  font-family:'Space Mono',monospace;
+  font-size:10px;font-weight:700;
+  letter-spacing:.14em;
+  color:var(--accent);
+  border:1px solid var(--accent);
+  padding:5px 10px;
+  border-radius:2px;
+  transform:rotate(-2deg);
+  text-transform:uppercase;
+}
+
+.screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.screen[hidden]{display:none;}
+
+#gate .gate-card{width:min(88vw,420px);text-align:center;padding:0 20px;}
+.lock-icon{color:var(--ink);margin-bottom:18px;}
+.eyebrow{
+  font-family:'Space Mono',monospace;
+  font-size:11px;font-weight:700;
+  letter-spacing:.14em;
+  color:var(--accent);
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+.headline{
+  font-family:'Fraunces',serif;
+  font-weight:560;
+  font-size:clamp(1.7rem,5vw,2.4rem);
+  line-height:1.08;
+  letter-spacing:-.01em;
+  margin-bottom:14px;
+}
+.body-copy{font-size:1rem;line-height:1.6;color:var(--ink-soft);}
+.gate-card .body-copy{margin-bottom:28px;}
+
+#gateForm{display:flex;flex-direction:column;gap:14px;}
+#pwInput{
+  width:100%;padding:12px 4px;
+  background:transparent;border:none;
+  border-bottom:1.5px solid var(--ink);
+  font-size:1.05rem;text-align:center;letter-spacing:.04em;
+}
+#pwInput::placeholder{color:var(--ink-soft);}
+.primary-btn{
+  width:100%;padding:14px 20px;
+  background:var(--ink);color:var(--paper);
+  border-radius:4px;font-weight:600;font-size:.95rem;
+  transition:transform .15s ease,background .15s ease;
+}
+.primary-btn:hover{background:var(--accent);}
+.primary-btn:active{transform:scale(.98);}
+.primary-btn:disabled{opacity:.6;cursor:default;}
+.gate-error{color:var(--accent);font-size:.88rem;margin-top:14px;min-height:1em;}
+.gate-error[hidden]{display:none;}
+
+@keyframes shake{
+  10%,90%{transform:translateX(-1px);}
+  20%,80%{transform:translateX(2px);}
+  30%,50%,70%{transform:translateX(-5px);}
+  40%,60%{transform:translateX(5px);}
+}
+.shake{animation:shake .5s;}
+
+#deck{flex-direction:column;padding:0;}
+#slideContainer{
+  flex:1;width:100%;
+  display:flex;align-items:center;justify-content:center;
+  padding:100px 24px 110px;
+  overflow-y:auto;
+}
+.slide{width:100%;max-width:720px;opacity:0;transform:translateY(10px);transition:opacity .45s ease,transform .45s ease;}
+.slide.in{opacity:1;transform:translateY(0);}
+.slide-content{text-align:center;}
+.outro .headline{font-size:clamp(2rem,6vw,3.1rem);}
+.icebreaker .headline,.break-slide .headline{font-size:clamp(1.85rem,5.5vw,2.7rem);}
+.hero-name{
+  font-family:'Fraunces',serif;
+  font-weight:650;
+  font-size:clamp(3.2rem,15vw,7.5rem);
+  line-height:0.95;
+  letter-spacing:-.02em;
+  margin:6px 0 18px;
+  color:var(--ink);
+  word-break:break-word;
+}
+.tagline{
+  font-family:'Fraunces',serif;
+  font-style:italic;
+  font-weight:500;
+  font-size:clamp(1.1rem,3vw,1.4rem);
+  color:var(--ink-soft);
+  margin-bottom:22px;
+}
+.intro .body-copy,.outro .body-copy,.icebreaker .body-copy,.break-slide .body-copy{max-width:480px;margin:0 auto 32px;}
+.footer-line{font-family:'Fraunces',serif;font-style:italic;font-size:1rem;color:var(--ink-soft);margin-bottom:28px;}
+.cta-btn{padding:15px 34px;background:var(--accent);color:var(--paper);border-radius:4px;font-weight:600;transition:transform .15s ease;}
+.cta-btn:hover{transform:translateY(-2px);}
+.link-btn{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);text-decoration:underline;text-underline-offset:4px;}
+
+.context{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:22px;}
+.matchup{position:relative;display:flex;gap:20px;align-items:stretch;}
+.option{
+  flex:1;padding:44px 20px;
+  border:1.5px solid var(--line);border-radius:8px;
+  font-family:'Fraunces',serif;font-weight:500;font-style:italic;
+  font-size:clamp(1.2rem,3.4vw,1.6rem);line-height:1.25;
+  transition:background .2s ease,color .2s ease,border-color .2s ease,transform .15s ease;
+}
+.option:hover{border-color:var(--ink);}
+.option.selected{background:var(--accent);border-color:var(--accent);color:var(--paper);transform:scale(1.02);}
+.or-badge{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:38px;height:38px;background:var(--paper);
+  border:1.5px solid var(--ink);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Space Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;
+  z-index:5;
+}
+
+.scratch-wrap{
+  position:relative;
+  width:min(360px,88vw);
+  aspect-ratio:360/280;
+  margin:0 auto 18px;
+  border-radius:10px;
+  overflow:hidden;
+  box-shadow:0 20px 50px -22px rgba(32,26,24,.4);
+}
+.scratch-message{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;justify-content:center;
+  padding:30px 32px;text-align:left;
+  background:
+    repeating-linear-gradient(rgba(32,26,24,.06) 0 1px, transparent 1px 34px),
+    var(--paper);
+  font-family:'Caveat',cursive;font-weight:600;
+  font-size:clamp(1.35rem,6vw,1.85rem);
+  line-height:1.35;
+  color:#1B3F91;
+  white-space:pre-line;
+}
+.scratch-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  touch-action:none;
+  cursor:grab;
+}
+.scratch-canvas:active{cursor:grabbing;}
+.scratch-hint{
+  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.08em;
+  text-transform:uppercase;color:var(--ink-soft);
+}
+
+.rps-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin:26px 0 18px;}
+.rps-choice{
+  width:84px;height:84px;border-radius:50%;
+  border:1.5px solid var(--line);
+  display:flex;align-items:center;justify-content:center;
+  font-size:2rem;background:transparent;
+  transition:border-color .2s ease,background .2s ease,transform .15s ease;
+}
+.rps-choice:hover{border-color:var(--ink);transform:translateY(-2px);}
+.rps-choice.picked{background:var(--accent);border-color:var(--accent);transform:scale(1.05);}
+.rps-choice:disabled{opacity:.45;cursor:default;}
+.rps-choice:disabled:hover{transform:none;}
+.rps-sub{font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.06em;color:var(--ink-soft);min-height:1.4em;}
+.rps-result{font-family:'Fraunces',serif;font-style:italic;font-size:1.1rem;color:var(--ink-soft);max-width:420px;margin:14px auto 0;min-height:1.6em;}
+
+.deck-nav{position:fixed;bottom:26px;left:0;right:0;display:flex;align-items:center;justify-content:center;gap:28px;z-index:20;}
+.deck-nav[hidden]{display:none;}
+.nav-btn{font-family:'Space Mono',monospace;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:10px 4px;}
+.nav-btn:disabled{opacity:.3;cursor:default;}
+.slide-count{font-family:'Space Mono',monospace;font-size:11px;color:var(--ink-soft);letter-spacing:.06em;}
+
+#progressRail{position:fixed;bottom:0;left:0;right:0;height:3px;background:var(--line);z-index:21;}
+#progressRail[hidden]{display:none;}
+#progressFill{height:100%;background:var(--accent);width:0%;transition:width .4s ease;}
+
+@media (max-width:640px){
+  .matchup{flex-direction:column;gap:16px;}
+  .option{padding:34px 18px;}
+  #slideContainer{padding:90px 20px 120px;}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important;animation:none !important;}
+}
+</style>
+</head>
+<body>
+
+<div class="chrome-top">
+  <div class="mark">JI</div>
+  <div class="stamp">Confidential</div>
+</div>
+
+<main id="gate" class="screen">
+  <div class="gate-card">
+    <svg class="lock-icon" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 0 1 8 0v4"></path></svg>
+    <div class="eyebrow">Confidential Deck</div>
+    <h1 class="headline">This deck is locked.</h1>
+    <p class="body-copy">Ask Jamiu for the password.</p>
+    <form id="gateForm">
+      <input type="password" id="pwInput" placeholder="Password" autocomplete="off" autocapitalize="off" autofocus required>
+      <button type="submit" class="primary-btn" id="unlockBtn">Unlock Deck</button>
+    </form>
+    <p class="gate-error" id="gateError" hidden aria-live="polite"></p>
+  </div>
+</main>
+
+<main id="deck" class="screen" hidden>
+  <div id="slideContainer"></div>
+  <nav class="deck-nav" id="deckNav" hidden>
+    <button class="nav-btn" id="prevBtn" type="button">Back</button>
+    <div class="slide-count" id="slideCount"></div>
+    <button class="nav-btn" id="nextBtn" type="button">Next</button>
+  </nav>
+</main>
+
+<div id="progressRail" hidden><div id="progressFill"></div></div>
+
+<script>
+(function(){
+  // ---- Encrypted deck content. Regenerate via change-password.html, don't hand-edit. ----
+  var LOCKED = {
+    salt: "GB/P/6z2YKGjARoAkphmBQ==",
+    iv: "f+7eCE65iZ1btqLP",
+    data: "ymlfViphl3r7Vc4oESOG1sNRQGBvLqY4T2yNZqIACiUgdvNaHOPdM0BpAIitC/q3eYtv2YsDEbRtjyJW+bSBvNgkdEB6GSzU8W2Z41wVsYxYtcsgDPqqJtw5/rbhOdJ96FtQ/YkgZx2W37yERKXhYUTLmSy4cBFzB90bKMZ5vxax57e/hOGj2ZPKDozyNtXh01SiOZIFI4Nm01Kx+K0/DSaZFJasCKlxeRFta3qNzf1NEpsV7nJfnu/CBtN+lCBzzbBh62iR9jJ93T5Qa5IEI81H/GsNd0hgXuzrEe3WVO9n6wTdNabzqiUNWp6M/bJBqm1xuYYBJ/HyM8j3JsbX6Znv0W3C57NzQjl/2hcGBmAtiBktw5NgcSTapIMEJJvl832AsqreH4ASXmQIPl999X/qkeqGAhpbTkGLyHDXlc+drsZU53EEkst7DPDvIMXdMj0dcO/VnOLjzDZRP6/Pudre9+j2/TJNV11m0JYosc3cFWIwGj3oTvdK2WYVlRbdJe/l+WXjfD/PMvnzxUqiRb+XRoSxIrl+2HNI7MFMhm8ANZcMCxuNQp77/qcZPDln3s6OXQ9+LZ2Hkif4JgNFgY8EbhKnZ2wW+2dQn+QHDk7vav+2E8KBEMZQTxCiK5og6xxI5RcP2uFoBDFvPcP3q61/kxRQha1dS8xDLj+eneSmsCqd8MGPjC1aMkFFy8ypMbKrnoE7Kij0I93CpBFLE/uE5YfXffkAV7/VQzbywrcxtlqBtr9uTIlD7q4MfkhM4BwTQXN6Bup+ptiAyleqVSWUOcuvBaZy+fOxM8Z78dFJzNHyXVArcRKWSlSya2u/xTbIP95J6y7SRLK9HqAPIwlrQtTtMEse8YEQs0AABP1jA/lujic/nYoSp0n2a+0XUVQ6PMDNm/sQbhfRS4qKDKP9UQCeeCS1P6wnH8Udb5ww5fJVhW5cXWm7OHqZCHJM1XGNqyeGPYg37YPNDwrMZh9k+JiGzkSqRczwFlRPEE9wfCgdQf0y9oZOpC455D2BCGvz4uUemShcXcsiV62To1wOqTqVRfbK+G4QlozJQgy1rVGPKec12lEfaY+ht6/M3V/NPxZ7hqX7DSrKgEtkLElEhAAx0yynzXtfXy7CManGTYZ//D+eVw9wJrZp52/UAKzSQj0a8ElP1gMhjZ5mA3ErHdaLC7y1javpqH/7wWJSXrQ2P2892zFnGc2nOPVKuCK2rIgYMXRCgVSadis/IWVc3sTinJ/p/Nd9vIAxFuiR/mjiC1ZYZbH4B++3ZMuCtc4XWrTudWYnqdJxm8ixiDkiq+JTu0guStT5yxBxKcHR+ahk9vsQJ2qeHMuYjctgNbK0r2Id0GpKq1sX9KhKr/va8aTJAMD0ye0c3IWTUHXRA8eyzNB2zg+o4nji2GuGBLJYrKIHlW+0HhADnI5jPuLZMqDJDFOxH7Or/j4xXMAHVUFNPsC2y8M0TaXJgVlNeBMDxC7OqvAH3CXYosZG+bFS7UgvyiQdfI6AGJ1GSiIY24aJwdPiBIj9A1773o8i6rpumuYtinW64c0J2wuEg5JI5jgd9avb2inkrnp4+YhE+798vk+U3VtWxvAl/Ex4O9iTblxMdJn9SH3CIMveh3z/w1oPPM6cH86oK70gMkyZ2cwqQZh77JUjB2PuxG9zGLzip/Kyre9Xg1NsIIHcEHdNvKSiN3Vw+tULJSGlHPWl2LI6EvIEq7lKhBpUPkZ1QM5FlOh55FZLrTZekAhzApOBu5k2IVgM07JQiCOenoSrvCU7ARDi0nykGklpnFO/SSkwDpVfdQnos6ny6RBbzE7zsdMs+GXWNDvVz6/YJYoX/pGaIt9EqzbtFFD/F1Z/nKstPTRLpyyHbx6s/NbSR2CjTtcaWaym7zXBw53ROZO5AXzTpm/QYiJaLfVV0/bZkHBPCBnA1Guv"
+  };
+  var ITERATIONS = 250000;
+  var textEnc = new TextEncoder();
+  var textDec = new TextDecoder();
+
+  function b64ToBytes(str){
+    var bin = atob(str);
+    var bytes = new Uint8Array(bin.length);
+    for(var i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+    return bytes;
+  }
+
+  // ---- Password -> key -> decrypt. Must match change-password.html exactly. ----
+  function deriveKey(password, saltBytes){
+    return crypto.subtle.importKey('raw', textEnc.encode(password), {name:'PBKDF2'}, false, ['deriveKey'])
+      .then(function(keyMaterial){
+        return crypto.subtle.deriveKey(
+          {name:'PBKDF2', salt: saltBytes, iterations: ITERATIONS, hash:'SHA-256'},
+          keyMaterial,
+          {name:'AES-GCM', length:256},
+          false,
+          ['decrypt']
+        );
+      });
+  }
+
+  // ---- Wrapped in Promise.resolve() so a bad payload throws a rejection, not a silent hang ----
+  function decryptContent(password){
+    return Promise.resolve().then(function(){
+      var salt = b64ToBytes(LOCKED.salt);
+      var iv = b64ToBytes(LOCKED.iv);
+      var data = b64ToBytes(LOCKED.data);
+      return deriveKey(password, salt).then(function(key){
+        return crypto.subtle.decrypt({name:'AES-GCM', iv: iv}, key, data);
+      }).then(function(plainBuf){
+        return textDec.decode(plainBuf);
+      });
+    });
+  }
+
+  // ---- Belt-and-suspenders: if nothing settles within 8s, surface an error instead of hanging forever ----
+  function withTimeout(promise, ms){
+    return new Promise(function(resolve, reject){
+      var timer = setTimeout(function(){ reject(new Error('timeout')); }, ms);
+      promise.then(function(v){ clearTimeout(timer); resolve(v); },
+                   function(e){ clearTimeout(timer); reject(e); });
+    });
+  }
+
+  // ---- App state ----
+  var DECK = null, SEQUENCE = [], current = 0;
+  var selections = {};
+
+  var gateEl = document.getElementById('gate');
+  var deckEl = document.getElementById('deck');
+  var slideContainer = document.getElementById('slideContainer');
+  var deckNav = document.getElementById('deckNav');
+  var prevBtn = document.getElementById('prevBtn');
+  var nextBtn = document.getElementById('nextBtn');
+  var slideCountEl = document.getElementById('slideCount');
+  var progressRail = document.getElementById('progressRail');
+  var progressFill = document.getElementById('progressFill');
+  var gateForm = document.getElementById('gateForm');
+  var pwInput = document.getElementById('pwInput');
+  var gateError = document.getElementById('gateError');
+  var unlockBtn = document.getElementById('unlockBtn');
+
+  gateForm.addEventListener('submit', function(e){
+    e.preventDefault();
+    gateError.hidden = true;
+
+    if (!window.crypto || !window.crypto.subtle) {
+      gateError.textContent = 'This connection blocked a secure feature (needs HTTPS). Try a different browser.';
+      gateError.hidden = false;
+      return;
+    }
+
+    unlockBtn.disabled = true;
+    unlockBtn.textContent = 'Checking…';
+
+    withTimeout(decryptContent(pwInput.value), 8000).then(function(json){
+      DECK = JSON.parse(json);
+      SEQUENCE = buildSequence(DECK);
+      enterDeck();
+    }).catch(function(err){
+      gateError.textContent = (err && err.message === 'timeout')
+        ? 'That took too long — try again.'
+        : "That's not it — try again.";
+      gateError.hidden = false;
+      gateEl.classList.remove('shake');
+      void gateEl.offsetWidth;
+      gateEl.classList.add('shake');
+      unlockBtn.disabled = false;
+      unlockBtn.textContent = 'Unlock Deck';
+      pwInput.select();
+    });
+  });
+
+  // ---- Flatten the decrypted content into an ordered list of slides. ----
+  // ---- This is what makes inserting an icebreaker or a mid-deck break just a content edit, not a code edit. ----
+  function buildSequence(deck){
+    var seq = [];
+    seq.push({ type: 'intro', data: deck.intro, personName: deck.personName });
+    if (deck.icebreaker) seq.push({ type: 'icebreaker', data: deck.icebreaker });
+    var qTotal = deck.slides.length;
+    var inserts = deck.inserts || [];
+    deck.slides.forEach(function(q, i){
+      seq.push({ type: 'question', data: q, qIndex: i, qTotal: qTotal });
+      inserts.filter(function(ins){ return ins.afterIndex === i; }).forEach(function(ins){
+        seq.push({ type: ins.type, data: ins });
+      });
+    });
+    seq.push({ type: 'outro', data: deck.outro });
+    return seq;
+  }
+
+  function enterDeck(){
+    gateEl.hidden = true;
+    deckEl.hidden = false;
+    progressRail.hidden = false;
+    current = 0;
+    renderSlide();
+  }
+
+  // ---- Slide building & navigation ----
+  function el(tag, className, text){
+    var e = document.createElement(tag);
+    if (className) e.className = className;
+    if (text !== undefined) e.textContent = text;
+    return e;
+  }
+
+  function buildIntro(data, personName){
+    var wrap = el('div','slide-content intro');
+    wrap.appendChild(el('div','eyebrow', data.eyebrow));
+    if (personName) wrap.appendChild(el('h1','hero-name', personName));
+    wrap.appendChild(el('p','tagline', data.title));
+    wrap.appendChild(el('p','body-copy', data.body));
+    var btn = el('button','cta-btn', data.cta);
+    btn.type = 'button';
+    btn.addEventListener('click', goNext);
+    wrap.appendChild(btn);
+    return wrap;
+  }
+
+  function buildOutro(data){
+    var wrap = el('div','slide-content outro');
+    wrap.appendChild(el('div','eyebrow', data.eyebrow));
+    if (data.title) wrap.appendChild(el('h1','headline', data.title));
+    if (data.body) wrap.appendChild(el('p','body-copy', data.body));
+    wrap.appendChild(el('p','footer-line', data.footer));
+    var again = el('button','link-btn','Watch it again');
+    again.type = 'button';
+    again.addEventListener('click', function(){ current = 0; renderSlide(); });
+    wrap.appendChild(again);
+    return wrap;
+  }
+
+  function buildIcebreaker(data){
+    var wrap = el('div','slide-content icebreaker');
+    wrap.appendChild(el('div','eyebrow', data.eyebrow));
+    wrap.appendChild(el('h1','headline', data.title));
+    if (data.body) wrap.appendChild(el('p','body-copy', data.body));
+    return wrap;
+  }
+
+  function buildBreak(data){
+    var wrap = el('div','slide-content break-slide');
+    wrap.appendChild(el('div','eyebrow', data.eyebrow));
+    wrap.appendChild(el('h1','headline', data.title));
+    if (data.body) wrap.appendChild(el('p','body-copy', data.body));
+    return wrap;
+  }
+
+  function buildScratch(data){
+    var wrap = el('div','slide-content scratch-slide');
+    wrap.appendChild(el('div','eyebrow', data.eyebrow || 'SCRATCH BELOW'));
+    if (data.title) wrap.appendChild(el('h1','headline', data.title));
+
+    var card = el('div','scratch-wrap');
+    var msg = el('div','scratch-message', data.message);
+    var canvas = document.createElement('canvas');
+    canvas.className = 'scratch-canvas';
+    canvas.width = 720; canvas.height = 560;
+    card.appendChild(msg);
+    card.appendChild(canvas);
+    wrap.appendChild(card);
+    wrap.appendChild(el('p','scratch-hint','Scratch to reveal'));
+
+    var ctx = canvas.getContext('2d');
+    ctx.fillStyle = '#A9805A';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+    ctx.fillStyle = 'rgba(246,238,233,.9)';
+    ctx.font = '700 26px "Space Mono", monospace';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('SCRATCH HERE', canvas.width/2, canvas.height/2);
+
+    var drawing = false;
+    var revealed = false;
+    var moveCount = 0;
+
+    function pos(e){
+      var rect = canvas.getBoundingClientRect();
+      var cx = (e.clientX - rect.left) * (canvas.width / rect.width);
+      var cy = (e.clientY - rect.top) * (canvas.height / rect.height);
+      return {x:cx, y:cy};
+    }
+
+    function scratchAt(x, y){
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath();
+      ctx.arc(x, y, 34, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    function checkRevealPercent(){
+      moveCount++;
+      if (moveCount % 8 !== 0) return;
+      var img = ctx.getImageData(0,0,canvas.width,canvas.height).data;
+      var total = 0, clear = 0;
+      for (var i = 3; i < img.length; i += 4 * 37){
+        total++;
+        if (img[i] === 0) clear++;
+      }
+      if (total && (clear/total) > 0.5 && !revealed){
+        revealed = true;
+        canvas.style.transition = 'opacity .5s ease';
+        canvas.style.opacity = '0';
+        setTimeout(function(){ canvas.style.display = 'none'; }, 500);
+      }
+    }
+
+    canvas.addEventListener('pointerdown', function(e){
+      drawing = true;
+      var p = pos(e);
+      scratchAt(p.x, p.y);
+    });
+    canvas.addEventListener('pointermove', function(e){
+      if (!drawing) return;
+      var p = pos(e);
+      scratchAt(p.x, p.y);
+      checkRevealPercent();
+    });
+    window.addEventListener('pointerup', function(){ drawing = false; });
+
+    return wrap;
+  }
+
+  function buildRPS(data){
+    var wrap = el('div','slide-content rps-slide');
+    wrap.appendChild(el('div','eyebrow', data.eyebrow || 'ONE QUICK GAME'));
+    wrap.appendChild(el('h1','headline', data.title || 'Rock, Paper, Scissors'));
+    if (data.prompt) wrap.appendChild(el('p','body-copy', data.prompt));
+
+    var choices = [
+      {key:'rock', emoji:'\u270A', label:'Rock'},
+      {key:'paper', emoji:'\u270B', label:'Paper'},
+      {key:'scissors', emoji:'\u270C\uFE0F', label:'Scissors'}
+    ];
+
+    function beats(a,b){
+      return (a==='rock'&&b==='scissors') || (a==='paper'&&b==='rock') || (a==='scissors'&&b==='paper');
+    }
+
+    var row = el('div','rps-row');
+    var subEl = el('p','rps-sub','');
+    var resultEl = el('p','rps-result','');
+
+    choices.forEach(function(c){
+      var btn = el('button','rps-choice', c.emoji);
+      btn.type = 'button';
+      btn.setAttribute('aria-label', c.label);
+      btn.addEventListener('click', function(){
+        Array.prototype.forEach.call(row.querySelectorAll('.rps-choice'), function(b){ b.disabled = true; });
+        btn.classList.add('picked');
+        var comp = choices[Math.floor(Math.random()*3)];
+        var outcome = comp.key === c.key ? 'tie' : (beats(c.key, comp.key) ? 'win' : 'lose');
+        subEl.textContent = 'You: ' + c.emoji + '     Me: ' + comp.emoji;
+        if (outcome === 'win') resultEl.textContent = data.winText || 'You win. I\u2019ll get you next time.';
+        else if (outcome === 'tie') resultEl.textContent = data.tieText || 'Tie. Great minds.';
+        else resultEl.textContent = data.loseText || 'I win \u2014 but I\u2019ll let this one slide.';
+      });
+      row.appendChild(btn);
+    });
+
+    wrap.appendChild(row);
+    wrap.appendChild(subEl);
+    wrap.appendChild(resultEl);
+    return wrap;
+  }
+
+  function buildOption(text, idx, side){
+    var btn = el('button','option', text);
+    btn.type = 'button';
+    if (selections[idx] === side) btn.classList.add('selected');
+    btn.addEventListener('click', function(){
+      selections[idx] = side;
+      renderSlide();
+    });
+    return btn;
+  }
+
+  function buildQuestion(q, idx){
+    var wrap = el('div','slide-content question');
+    if (q.context) wrap.appendChild(el('div','context', q.context));
+    var matchup = el('div','matchup');
+    matchup.appendChild(buildOption(q.a, idx, 'a'));
+    matchup.appendChild(el('div','or-badge','OR'));
+    matchup.appendChild(buildOption(q.b, idx, 'b'));
+    wrap.appendChild(matchup);
+    return wrap;
+  }
+
+  function renderSlide(){
+    slideContainer.innerHTML = '';
+    var frag = el('div','slide');
+    var item = SEQUENCE[current];
+    var last = SEQUENCE.length - 1;
+
+    if (item.type === 'intro'){
+      frag.appendChild(buildIntro(item.data, item.personName));
+      deckNav.hidden = true;
+    } else if (item.type === 'outro'){
+      frag.appendChild(buildOutro(item.data));
+      deckNav.hidden = true;
+    } else if (item.type === 'icebreaker'){
+      frag.appendChild(buildIcebreaker(item.data));
+      deckNav.hidden = false;
+      slideCountEl.textContent = 'WARM-UP';
+    } else if (item.type === 'break'){
+      frag.appendChild(buildBreak(item.data));
+      deckNav.hidden = false;
+      slideCountEl.textContent = 'BREAK';
+    } else if (item.type === 'scratch'){
+      frag.appendChild(buildScratch(item.data));
+      deckNav.hidden = false;
+      slideCountEl.textContent = 'SCRATCH';
+    } else if (item.type === 'rps'){
+      frag.appendChild(buildRPS(item.data));
+      deckNav.hidden = false;
+      slideCountEl.textContent = 'GAME';
+    } else {
+      frag.appendChild(buildQuestion(item.data, item.qIndex));
+      deckNav.hidden = false;
+      slideCountEl.textContent = String(item.qIndex+1).padStart(2,'0') + ' / ' + String(item.qTotal).padStart(2,'0');
+    }
+
+    slideContainer.appendChild(frag);
+    requestAnimationFrame(function(){ frag.classList.add('in'); });
+
+    var pct = current / last * 100;
+    progressFill.style.width = pct + '%';
+  }
+
+  function goNext(){ var last = SEQUENCE.length - 1; if (current < last){ current++; renderSlide(); } }
+  function goPrev(){ if (current > 0){ current--; renderSlide(); } }
+
+  nextBtn.addEventListener('click', goNext);
+  prevBtn.addEventListener('click', goPrev);
+
+  document.addEventListener('keydown', function(e){
+    if (deckEl.hidden) return;
+    if (e.key === 'ArrowRight') goNext();
+    if (e.key === 'ArrowLeft') goPrev();
+  });
+
+  var touchStartX = 0;
+  slideContainer.addEventListener('touchstart', function(e){ touchStartX = e.touches[0].clientX; }, {passive:true});
+  slideContainer.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 60){ if (dx < 0) goNext(); else goPrev(); }
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
